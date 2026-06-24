@@ -1,14 +1,10 @@
 
 import sys
-
+import configparser
 from .variables import *
 import pandas as pd
 import numpy as np
 import json
-
-
-
-
 
 #-  _        _______  _______  ______     ______   _______ _________ _______   
 #- ( \      (  ___  )(  ___  )(  __  \   (  __  \ (  ___  )\__   __/(  ___  )  
@@ -21,6 +17,17 @@ import json
                 
                                                                             
 #_ Load Data _#
+#  Load a config file
+def load_cfg(name:str = ""):
+    if name == "":
+        print("ERROR - Inalid 'name' variable in util_Data.load_cfg()")
+        sys.exit()
+
+    name = name.replace(" ", "_")
+    name = name.lower()
+    name = f"/Data/{name}.cfg"
+    return configparser.ConfigParser().read(name)
+
 #  Load Beast data for specific year(s), blank or all for all data
 def load_beast(years = '', defunct_colleges = True):
     if years == '' or years.lower() == 'all':

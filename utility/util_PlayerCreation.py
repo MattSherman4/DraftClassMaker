@@ -21,6 +21,8 @@ from operator import itemgetter
 #     return prestige_dict
 
 def get_name(size):
+    name_data = load_cfg("player Name")
+    print(name_data)
     history_draft = load_draft_all()
     history_draft = history_draft[history_draft['Year'] >= MODERN_ERA].copy()
 

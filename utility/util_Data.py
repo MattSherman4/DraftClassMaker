@@ -5,6 +5,7 @@ from .variables import *
 import pandas as pd
 import numpy as np
 import json
+from pathlib import Path
 
 #-  _        _______  _______  ______     ______   _______ _________ _______   
 #- ( \      (  ___  )(  ___  )(  __  \   (  __  \ (  ___  )\__   __/(  ___  )  
@@ -23,10 +24,16 @@ def load_cfg(name:str = ""):
         print("ERROR - Inalid 'name' variable in util_Data.load_cfg()")
         sys.exit()
 
+    parent_dir = Path(__file__).resolve().parent.parent
     name = name.replace(" ", "_")
     name = name.lower()
-    name = f"/Data/{name}.cfg"
-    return configparser.ConfigParser().read(name)
+    name = parent_dir / f"Data/{name}.cfg"
+    cfg = configparser.ConfigParser()
+    try:
+        cfg.read(name, encoding = 'utf-8')
+    except:
+        cfg.read(name)
+    return cfg
 
 #  Load Beast data for specific year(s), blank or all for all data
 def load_beast(years = '', defunct_colleges = True):

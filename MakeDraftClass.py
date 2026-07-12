@@ -95,3 +95,4 @@ for pos in current_positions:
     draft_class = merge_and_remove_x_y_cols(draft_class.join(temp_class, on = list(temp_class.columns).remove('College'), how = 'left', lsuffix = "_x", rsuffix = "_y"))
 
 print(draft_class.sort_values(['Grades_Numeric', 'POS_Numeric']).reset_index(drop = True).head(32)[['POS', 'Name', 'Grade', 'College']])
+draft_class.sort_values(['Grades_Numeric', 'POS_Numeric']).reset_index(drop = True)[['POS', 'Name', 'Grade', 'College']].to_csv('output.csv')

@@ -23,8 +23,6 @@ import ast
 
 def get_name(size):
     name_data = load_cfg("player Names")
-    history_draft = load_draft_all()
-    history_draft = history_draft[history_draft['Year'] >= MODERN_ERA].copy()
 
     #  Will re-spin the name if there is more than one hyphen
     def check_hyphenated_grammar(arr, i, first_count, last_count, suffix_count):

@@ -27,6 +27,8 @@ def load_cfg(name:str = ""):
     parent_dir = Path(__file__).resolve().parent.parent
     name = name.replace(" ", "_")
     name = name.lower()
+    if name[-4] == ".cfg":
+        name = name[:-4]
     name = parent_dir / f"Data/{name}.cfg"
     cfg = configparser.ConfigParser()
     try:

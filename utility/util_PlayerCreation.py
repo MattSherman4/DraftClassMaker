@@ -22,7 +22,7 @@ import ast
 #     return prestige_dict
 
 def get_name(size):
-    name_data = load_cfg("player Names")
+    name_data = load_cfg("PlayerNameOdds")
 
     #  Will re-spin the name if there is more than one hyphen
     def check_hyphenated_grammar(arr, i, first_count, last_count, suffix_count):
@@ -140,30 +140,30 @@ def get_college(size, position, prestige):
         
     def get_division(prestige = 1):
         if prestige == 2:
-            return random.choices(list(mid_freq.keys()), weights = list(mid_freq.values()), k = 1)[0]
+            return random.choices(list(ast.literal_eval(college_data["mid_freq"]).keys()), weights = list(ast.literal_eval(college_data["mid_freq"]).values()), k = 1)[0]
         if prestige == 3:
-            return random.choices(list(bot_freq.keys()), weights = list(bot_freq.values()), k = 1)[0]
+            return random.choices(list(ast.literal_eval(college_data["bot_freq"]).keys()), weights = list(ast.literal_eval(college_data["bot_freq"]).values()), k = 1)[0]
         elif prestige == 4:
-            return random.choices(list(FA_freq.keys()), weights = list(FA_freq.values()), k = 1)[0]
+            return random.choices(list(ast.literal_eval(college_data["fa_freq"]).keys()), weights = list(ast.literal_eval(college_data["fa_freq"]).values()), k = 1)[0]
         elif prestige == 5:
-            return random.choices(list(RMC_freq.keys()), weights = list(RMC_freq.values()), k = 1)[0]
+            return random.choices(list(ast.literal_eval(college_data["rmc_freq"]).keys()), weights = list(ast.literal_eval(college_data["rmc_freq"]).values()), k = 1)[0]
         else:
-            return random.choices(list(top_freq.keys()), weights = list(top_freq.values()), k = 1)[0]
+            return random.choices(list(ast.literal_eval(college_data["top_freq"]).keys()), weights = list(ast.literal_eval(college_data["top_freq"]).values()), k = 1)[0]
         
     def college_spin(rnk = 'div'):
         while True:
             if rnk == 'top_10':
-                college = random.choices(list(top_10.keys()), weights = list(top_10.values()), k = 1)[0] # Top 10 spin
+                college = random.choices(list(ast.literal_eval(college_data["top_10"]).keys()), weights = list(ast.literal_eval(college_data["top_10"]).values()), k = 1)[0] # Top 10 spin
             elif rnk == 'conf':
                 conf = get_division(temp_prestige)
                 if conf != conf:
-                    conf = DEFAUL_CONF # Default if error
-                college = random.choice(list(all_colleges[all_colleges['Conference'] == conf]['College'])) # Conf spin
+                    conf = DEFAULT_CONF # Default if error
+                college = random.choice(all_colleges_by_conf[conf.casefold()]) # Conf spin
             elif rnk == 'div':
                 div = get_division(temp_prestige)
                 if div != div:
                     div = DEFAULT_DIV # Default if error
-                college = random.choice(list(all_colleges[all_colleges['Division'] == div]['College'])) # Div spin
+                college = random.choice(all_colleges_by_div[div]) #! Div spin - Potential (lower)Case error
 
             # If the top 10 spin fails:
             if college == 'Random':
@@ -180,7 +180,16 @@ def get_college(size, position, prestige):
         return college
 
     #! Add stuff here !#
-    
+    college_data = load_cfg("CollegeOddsByPosition")[position]
+    all_colleges = load_cfg("CollegeByDivAndConf")
+    all_colleges_by_div = {}
+    all_colleges_by_conf = {}
+    for key_div in all_colleges.sections():
+        all_colleges_by_div[key_div] = []
+        for key_conf, value_conf in all_colleges[key_div].items():
+            all_colleges_by_div[key_div] += ast.literal_eval(value_conf)
+            all_colleges_by_conf[key_conf] = ast.literal_eval(value_conf)
+
     college_list_return = []
     college_list_total = []
     college_list_draftable = []

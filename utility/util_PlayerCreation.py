@@ -180,7 +180,7 @@ def get_college(size, position, prestige):
         return college
 
     #! Add stuff here !#
-    college_data = load_cfg("CollegeOddsByPosition")[position]
+    college_data = load_cfg("DraftGeneral")["CollegeOdds" + str(position)]
     all_colleges = load_cfg("CollegeByDivAndConf")
     all_colleges_by_div = {}
     all_colleges_by_conf = {}

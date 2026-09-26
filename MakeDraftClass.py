@@ -14,7 +14,7 @@ beast = uData.load_beast()
 history_draft = uData.load_draft_all()
 
 #  Loading CFGs
-general = uData.load_cfg("General")
+general = uData.load_cfg("General")["General"]
 draft_general = uData.load_cfg("DraftGeneral")
 
 #_ Collecting DATA _#
@@ -34,15 +34,15 @@ for pos in beast['POS'].unique():
 #_ Building New Class _#
 # Get random new draft class size
 draft_class_size = {}
-for pos in ast.literal_eval(general["General"]["primary_positions"]):
+for pos in ast.literal_eval(general["primary_positions"]):
     temp = beast[beast['POS'] == pos].copy()
     pos_size = 0
 
-    for year in ast.literal_eval(general["General"]["years_with_full_beast_data"]):
+    for year in ast.literal_eval(general["years_with_full_beast_data"]):
         temp = temp[temp['Year'] == year]
         pos_size += len(temp)
 
-    pos_size = pos_size / len(ast.literal_eval(general["General"]["years_with_full_beast_data"]))
+    pos_size = pos_size / len(ast.literal_eval(general["years_with_full_beast_data"]))
     draft_class_size[pos] = random.randint(uData.min_rand(pos_size), uData.max_rand(pos_size))
 
 # Converts the draft_class_size[pos] dictionary to a list
@@ -69,7 +69,7 @@ draft_class['Name'] = names
 
 # Grading players
 grades_total = []
-for pos in ast.literal_eval(general["General"]["primary_positions"]):
+for pos in ast.literal_eval(general["primary_positions"]):
     graded = grade_count_pos[pos] / total_count_pos[pos]
     udfa = FA_count_pos[pos] / total_count_pos[pos]
     pos_len = len(draft_class[draft_class['POS'] == pos])
@@ -94,7 +94,7 @@ draft_class['Prestige'] = uData.get_prestige(draft_class)
 
 # Adding colleges
 draft_class = draft_class.assign(College = np.nan)
-for pos in ast.literal_eval(general["General"]["primary_positions"]):
+for pos in ast.literal_eval(general["primary_positions"]):
     temp_class = draft_class[draft_class['POS'] == pos].copy()
     college_list = uPlayerCreation.get_college(size = len(temp_class),  position = pos, prestige = list(draft_class['Prestige']))
     college_list = [l[0] for l in sorted(college_list, key = lambda x: x[1])]

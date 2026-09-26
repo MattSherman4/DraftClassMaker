@@ -40,9 +40,9 @@ def load_cfg(name:str = ""):
 
 #  Load Beast data for specific year(s), blank or all for all data
 def load_beast(years = '', defunct_colleges = True):
-    general = load_cfg("General")
+    general = load_cfg("General")["General"]
     if years == '' or years.lower() == 'all':
-        years = ast.literal_eval(general["General"]["years_with_full_beast_data"])
+        years = ast.literal_eval(general["years_with_full_beast_data"])
     
     # Importing Combine stats
     if isinstance(years, int):

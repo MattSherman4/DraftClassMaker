@@ -41,8 +41,8 @@ def remove_dups_combine_proday(df, keep = 'combine'):
 def random_grades(size, pos): 
     #! More efficient way to load this data in? !#
     draft_data = uData.load_draft_history()
-    draft_general = uData.load_cfg('General')
-    draft_data = draft_data[(draft_data['Year'] >= ast.literal_eval(draft_general["General"]["passing_era"]))]
+    general = uData.load_cfg('General')["General"]
+    draft_data = draft_data[(draft_data['Year'] >= ast.literal_eval(general["passing_era"]))]
     draft_data['POS'] = draft_data['POS'].map(uData.normalize_pos).fillna(draft_data['POS'])
 
     draft_data = draft_data[draft_data['POS'] == pos].copy()

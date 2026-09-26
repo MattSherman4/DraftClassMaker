@@ -3,12 +3,9 @@
 #< get_name(draft_size, draft_data) - Generateds a draft_size sized list of names based on dataset draft_data
 #< get_college
 
-import sys
-
-from .util_Data import *
+from . import util_Data as uData
+from . import variables as vars
 import random
-import heapq
-from operator import itemgetter
 import ast
     
 # Returns a dictionary of prestige counts given a list
@@ -22,7 +19,7 @@ import ast
 #     return prestige_dict
 
 def get_name(size):
-    name_data = load_cfg("PlayerNameOdds")
+    name_data = uData.load_cfg("PlayerNameOdds")
 
     #  Will re-spin the name if there is more than one hyphen
     def check_hyphenated_grammar(arr, i, first_count, last_count, suffix_count):
@@ -71,7 +68,7 @@ def get_name(size):
             hyphenated = check_hyphenated_grammar(hyphenated, 0, first_count, last_count, suffix_count)
             #  Check for grammar adjustments and form name in name array
             for t in hyphenated:
-                if t in Upper:
+                if t in vars.Upper:
                     name.append(t.upper())
                 else:
                     name.append(t)
@@ -80,7 +77,7 @@ def get_name(size):
         else:
             name = random_name(0, first_count, last_count, suffix_count)
             #  Check for grammar adjustments
-            if name in Upper:
+            if name in vars.Upper:
                 name = name.upper()
         # Append the first name to the append variable and clear the name variable for the last name
         app.append(name)
@@ -96,7 +93,7 @@ def get_name(size):
             hyphenated = check_hyphenated_grammar(hyphenated, 1, first_count, last_count, suffix_count)
             #  Check for grammar adjustments and form name in name array
             for t in hyphenated:
-                if t in Upper:
+                if t in vars.Upper:
                     name.append(t.upper())
                 else:
                     name.append(t)
@@ -104,7 +101,7 @@ def get_name(size):
         #  If no hyphen is needed, run the last name randomizer once
         else:
             name = random_name(1, first_count, last_count, suffix_count)
-            if name in Upper:
+            if name in vars.Upper:
                 name = name.upper()
         # Append the last name to the append variable and clear the name variable for the last name
         app.append(name)
@@ -114,7 +111,7 @@ def get_name(size):
         #  If the name has a suffix, run the suffix randomizer once
         if (random.randrange(100000) / 1000.0) < suffix_percentage:
             name = random_name(2, first_count, last_count, suffix_count)
-            if name in Upper:
+            if name in vars.Upper:
                 name = name.upper()
             app.append(name)
 
@@ -157,12 +154,12 @@ def get_college(size, position, prestige):
             elif rnk == 'conf':
                 conf = get_division(temp_prestige)
                 if conf != conf:
-                    conf = DEFAULT_CONF # Default if error
+                    conf = general["default_conf"] # Default if error
                 college = random.choice(all_colleges_by_conf[conf.casefold()]) # Conf spin
             elif rnk == 'div':
                 div = get_division(temp_prestige)
                 if div != div:
-                    div = DEFAULT_DIV # Default if error
+                    div = general["default_div"] # Default if error
                 college = random.choice(all_colleges_by_div[div]) #! Div spin - Potential (lower)Case error
 
             # If the top 10 spin fails:
@@ -172,16 +169,18 @@ def get_college(size, position, prestige):
                 else:
                     college = college_spin()
                 break
-            if college_list_total.count(college) < max_pos_draft_eligable[position]:
+            if college_list_total.count(college) < vars.max_pos_draft_eligable[position]:
                 break
             elif temp_prestige <= 13:
-                if college_list_draftable.count(college) < max_pos_draftable[position]:
+                if college_list_draftable.count(college) < vars.max_pos_draftable[position]:
                     break
         return college
 
     #! Add stuff here !#
-    college_data = load_cfg("DraftGeneral")["CollegeOdds" + str(position)]
-    all_colleges = load_cfg("CollegeByDivAndConf")
+    general = uData.load_cfg("General")
+    college_data = uData.load_cfg("DraftGeneral")["CollegeOdds" + str(position)]
+    all_colleges = uData.load_cfg("CollegeByDivAndConf")
+
     all_colleges_by_div = {}
     all_colleges_by_conf = {}
     for key_div in all_colleges.sections():

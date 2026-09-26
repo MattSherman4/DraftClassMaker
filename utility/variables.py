@@ -3,13 +3,6 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
 # FINAL variables
-MODERN_ERA = 1970
-PASSING_ERA = 2004
-DRAFT_FULL_DATA = [2025]
-DEFAULT_DIV = 'FBS'
-DEFAULT_CONF = 'SEC'
-POWER_CONF = {'SEC' : 0.25, 'Big Ten' : 0.25, 'ACC' : 0.25, 'Big 12' : 0.25}
-POWER_DIV = {'FBS' : 0.90, 'FCS' : 0.09, 'DII' : 0.01}
 
 # Naming conventions
 generational_suffixes = ['Jr.', 'Sr.', 'I', 'Ii', 'Iii', 'Iv', 'V', 'Vi', 'Vii', 'Viii', 'Ix', 'X']
@@ -19,9 +12,6 @@ Upper = ['Aj', 'At', 'Bj', 'Cj', 'Dj', 'Dk', 'Ej', 'Jb', 'Jj', 'Jp', 'Jr', 'Jt',
 Upper.extend(generational_suffixes)
 Upper.remove('Jr.')
 Upper.remove('Sr.')
-
-# Currently available positions. Could be changed with storylines later on
-current_positions = ['QB', 'HB', 'WR', 'TE', 'OT', 'OG', 'C', 'EDGE', 'DT', 'MLB', 'CB', 'S', 'K', 'P', 'LS']
 
 # Converts position abbreviations to full names
 pos_abr_to_full = {'QB' : 'Quarterback', 'HB' : 'Runningback',

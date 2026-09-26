@@ -1,6 +1,7 @@
-from .util_Data import *
-from .variables import *
-import random
+from . import util_Data as uData
+from . import variables as vars
+import numpy as np
+import random, ast
 
 #_ Removing Duplicates for combine and proday data _#
 #  Gets only a single instance of every player. Keep determines which Type take precedence.
@@ -39,9 +40,10 @@ def remove_dups_combine_proday(df, keep = 'combine'):
 # size = number of draft-grade players, pos = position
 def random_grades(size, pos): 
     #! More efficient way to load this data in? !#
-    draft_data = load_draft_history()
-    draft_data = draft_data[(draft_data['Year'] >= PASSING_ERA)]
-    draft_data['POS'] = draft_data['POS'].map(normalize_pos).fillna(draft_data['POS'])
+    draft_data = uData.load_draft_history()
+    draft_general = uData.load_cfg('General')
+    draft_data = draft_data[(draft_data['Year'] >= ast.literal_eval(draft_general["General"]["passing_era"]))]
+    draft_data['POS'] = draft_data['POS'].map(uData.normalize_pos).fillna(draft_data['POS'])
 
     draft_data = draft_data[draft_data['POS'] == pos].copy()
     pos_len = len(draft_data)
@@ -60,9 +62,9 @@ def random_grades(size, pos):
     weight_7 =  len(draft_data[(draft_data['Pick'] > 236) & (draft_data['Pick'] <= 257)]) / pos_len
     
     weights = [weight_1, weight_12, weight_2, weight_23, weight_3, weight_34, weight_4, weight_45, weight_5, weight_56, weight_6, weight_67, weight_7]
-    weights = weights_to_one(weights)
+    weights = uData.weights_to_one(weights)
     
-    draft_grades_to_numeric_reversed = {value: key for key, value in draft_grades_to_numeric.items()} 
+    draft_grades_to_numeric_reversed = {value: key for key, value in vars.draft_grades_to_numeric.items()} 
     grades = random.choices(np.arange(1, 14), weights = weights, k = size)
     grades = [draft_grades_to_numeric_reversed[grade] for grade in grades]
     return grades

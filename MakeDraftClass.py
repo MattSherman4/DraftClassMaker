@@ -1,12 +1,10 @@
 from utility import util_Data as uData
 from utility import util_DraftCreation as uDraftCreation
 from utility import util_PlayerCreation as uPlayerCreation
-from utility import variables as vars
-
 import pandas as pd
 import numpy as np
 import random
-from collections import Counter
+import ast
 
 #---- MAKING THE DRAFT CLASS ----#
 draft_class = pd.DataFrame()
@@ -16,6 +14,7 @@ beast = uData.load_beast()
 history_draft = uData.load_draft_all()
 
 #  Loading CFGs
+general = uData.load_cfg("General")
 draft_general = uData.load_cfg("DraftGeneral")
 
 #_ Collecting DATA _#
@@ -35,15 +34,15 @@ for pos in beast['POS'].unique():
 #_ Building New Class _#
 # Get random new draft class size
 draft_class_size = {}
-for pos in vars.current_positions:
+for pos in ast.literal_eval(general["General"]["primary_positions"]):
     temp = beast[beast['POS'] == pos].copy()
     pos_size = 0
 
-    for year in vars.DRAFT_FULL_DATA:
+    for year in ast.literal_eval(general["General"]["years_with_full_beast_data"]):
         temp = temp[temp['Year'] == year]
         pos_size += len(temp)
 
-    pos_size = pos_size / len(vars.DRAFT_FULL_DATA)
+    pos_size = pos_size / len(ast.literal_eval(general["General"]["years_with_full_beast_data"]))
     draft_class_size[pos] = random.randint(uData.min_rand(pos_size), uData.max_rand(pos_size))
 
 # Converts the draft_class_size[pos] dictionary to a list
@@ -70,7 +69,7 @@ draft_class['Name'] = names
 
 # Grading players
 grades_total = []
-for pos in vars.current_positions:
+for pos in ast.literal_eval(general["General"]["primary_positions"]):
     graded = grade_count_pos[pos] / total_count_pos[pos]
     udfa = FA_count_pos[pos] / total_count_pos[pos]
     pos_len = len(draft_class[draft_class['POS'] == pos])
@@ -95,7 +94,7 @@ draft_class['Prestige'] = uData.get_prestige(draft_class)
 
 # Adding colleges
 draft_class = draft_class.assign(College = np.nan)
-for pos in vars.current_positions:
+for pos in ast.literal_eval(general["General"]["primary_positions"]):
     temp_class = draft_class[draft_class['POS'] == pos].copy()
     college_list = uPlayerCreation.get_college(size = len(temp_class),  position = pos, prestige = list(draft_class['Prestige']))
     college_list = [l[0] for l in sorted(college_list, key = lambda x: x[1])]

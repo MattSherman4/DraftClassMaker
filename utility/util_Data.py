@@ -1,7 +1,6 @@
-
+from . import variables as vars
 import sys
 import configparser
-from .variables import *
 import pandas as pd
 import numpy as np
 import json
@@ -81,7 +80,7 @@ def load_beast(years = '', defunct_colleges = True):
 
     # Normalizing data
     beast['Name'] = check_name_grammar(name = list(beast['Name']))
-    beast['POS'] = beast['POS'].map(normalize_pos).fillna(beast['POS'])
+    beast['POS'] = beast['POS'].map(vars.normalize_pos).fillna(beast['POS'])
     beast = map_college(beast, 'SCHOOL', 'Beast', 'College')
 
     # Remove unwanted data
@@ -95,7 +94,7 @@ def load_draft_history(stats = False):
 
     # Normalizing data
     sports_ref = sports_ref.rename(columns = {'College' : 'SCHOOL', 'Pos' : 'POS'})
-    sports_ref['POS'] = sports_ref['POS'].map(normalize_pos).fillna(sports_ref['POS'])
+    sports_ref['POS'] = sports_ref['POS'].map(vars.normalize_pos).fillna(sports_ref['POS'])
     sports_ref = map_college(sports_ref, 'SCHOOL', 'Sports_Reference', 'College')
     sports_ref = sports_ref.rename(columns = {'College' : 'College_x', 'Nickname' : 'Nickname_x', 'City' : 'City_x', 'State' : 'State_x', 'Conference' : 'Conference_x', 'Division' : 'Division_x'})
     sports_ref = map_college(sports_ref, 'SCHOOL', 'Torvik', 'College')
@@ -156,13 +155,13 @@ def check_name_grammar(name:list):
     ret = []
     for n in name:
         n = n.title()
-        if n in Upper:
+        if n in vars.Upper:
             name = name.upper()
         if len(n) > 2 and n[-2] == "'":
             n = n[:-1] + n[-1].lower()
         if n[:2] == 'Mc':
             return 'Mc' + n[2:].title()
-        if n in special:
+        if n in vars.special:
             if n == 'Lequint':
                 n = 'LeQuint'
         ret.append(n)
@@ -181,13 +180,13 @@ def get_prestige(prestige):
     
     prestige_list = []
     for val in prestige:
-        if val <= draft_grades_prestige_cutoff[1]:
+        if val <= vars.draft_grades_prestige_cutoff[1]:
             prestige_list.append(1)
-        elif val <= draft_grades_prestige_cutoff[2]:
+        elif val <= vars.draft_grades_prestige_cutoff[2]:
             prestige_list.append(2)
-        elif val <= draft_grades_prestige_cutoff[3]:
+        elif val <= vars.draft_grades_prestige_cutoff[3]:
             prestige_list.append(3)
-        elif val == draft_grades_prestige_cutoff[4]:
+        elif val == vars.draft_grades_prestige_cutoff[4]:
             prestige_list.append(4)
         else:
             prestige_list.append(5)

@@ -1,6 +1,7 @@
 from utility import util_Data as uData
 from utility import util_DraftCreation as uDraftCreation
 from utility import util_PlayerCreation as uPlayerCreation
+from utility import variables as vars
 import pandas as pd
 import numpy as np
 import random
@@ -55,10 +56,10 @@ for key, value in draft_class_size.items():
 draft_class['POS'] = pos_list
 
 # Adding side of ball based on position mapping
-draft_class["Side"] = draft_class["POS"].map(uData.pos_abr_to_side)
+draft_class["Side"] = draft_class["POS"].map(vars.pos_abr_to_side)
 
 # Adding position numeric (for sorting) based on position mapping
-draft_class["POS_Numeric"] = draft_class["POS"].map(uData.pos_abr_to_num)
+draft_class["POS_Numeric"] = draft_class["POS"].map(vars.pos_abr_to_num)
 
 #_ Creating Players _#
 # Creating names
@@ -89,7 +90,7 @@ for pos in ast.literal_eval(general["primary_positions"]):
 
 # Add values into final draft class database 
 draft_class['Grade'] = grades_total
-draft_class['Grades_Numeric'] = draft_class['Grade'].map(uData.draft_grades_to_numeric)
+draft_class['Grades_Numeric'] = draft_class['Grade'].map(vars.draft_grades_to_numeric)
 draft_class['Prestige'] = uData.get_prestige(draft_class)
 
 # Adding colleges

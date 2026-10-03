@@ -43,7 +43,7 @@ def random_grades(size, pos):
     draft_data = uData.load_draft_history()
     general = uData.load_cfg('General')["General"]
     draft_data = draft_data[(draft_data['Year'] >= ast.literal_eval(general["passing_era"]))]
-    draft_data['POS'] = draft_data['POS'].map(uData.normalize_pos).fillna(draft_data['POS'])
+    draft_data['POS'] = draft_data['POS'].map(vars.normalize_pos).fillna(draft_data['POS'])
 
     draft_data = draft_data[draft_data['POS'] == pos].copy()
     pos_len = len(draft_data)

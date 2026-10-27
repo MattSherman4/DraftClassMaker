@@ -178,7 +178,7 @@ def get_college(size, position, prestige):
 
     #! Add stuff here !#
     general = uData.load_cfg("General")
-    college_data = uData.load_cfg("DraftGeneral")["CollegeOdds" + str(position)]
+    college_data = uData.load_cfg("DraftGeneral")[str(position)]
     all_colleges = uData.load_cfg("CollegeByDivAndConf")
 
     all_colleges_by_div = {}

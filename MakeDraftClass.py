@@ -20,17 +20,17 @@ draft_general = uData.load_cfg("DraftGeneral")
 
 #_ Collecting DATA _#
 # Get the historical draft rankings by position
-grade_count_total = beast['Grade'].value_counts().to_dict()
-grade_count_pos = {}
-FA_count_pos = {}
-RMC_count_pos = {}
-total_count_pos = {}
-for pos in beast['POS'].unique():
-    temp = beast[beast['POS'] == pos].copy()
-    grade_count_pos[pos] = temp[(temp['Grade'] != 'FA') & (temp['Grade'] != 'RMC')]['Grade'].count()
-    FA_count_pos[pos] = temp[temp['Grade'] == 'FA']['Grade'].count()
-    RMC_count_pos[pos] = temp[temp['Grade'] == 'RMC']['Grade'].count()
-    total_count_pos[pos] = temp['Grade'].count()
+# grade_count_total = beast['Grade'].value_counts().to_dict()
+# grade_count_pos = {}
+# FA_count_pos = {}
+# RMC_count_pos = {}
+# total_count_pos = {}
+# for pos in beast['POS'].unique():
+#     temp = beast[beast['POS'] == pos].copy()
+#     grade_count_pos[pos] = temp[(temp['Grade'] != 'FA') & (temp['Grade'] != 'RMC')]['Grade'].count()
+#     FA_count_pos[pos] = temp[temp['Grade'] == 'FA']['Grade'].count()
+#     RMC_count_pos[pos] = temp[temp['Grade'] == 'RMC']['Grade'].count()
+#     total_count_pos[pos] = temp['Grade'].count()
 
 #_ Building New Class _#
 # Get random new draft class size
@@ -71,8 +71,8 @@ draft_class['Name'] = names
 # Grading players
 grades_total = []
 for pos in ast.literal_eval(general["primary_positions"]):
-    graded = grade_count_pos[pos] / total_count_pos[pos]
-    udfa = FA_count_pos[pos] / total_count_pos[pos]
+    graded = int(draft_general[pos]['totalgraded']) / int(draft_general[pos]['total']) 
+    udfa = int(draft_general[pos]['totalfa'])  / int(draft_general[pos]['total']) 
     pos_len = len(draft_class[draft_class['POS'] == pos])
 
     #TODO - Wrap into UTIL function?

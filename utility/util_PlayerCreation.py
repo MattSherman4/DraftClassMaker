@@ -150,7 +150,13 @@ def get_college(size, position, prestige):
     def college_spin(rnk = 'div'):
         while True:
             if rnk == 'top_10':
-                college = random.choices(list(ast.literal_eval(college_data["top_10"]).keys()), weights = list(ast.literal_eval(college_data["top_10"]).values()), k = 1)[0] # Top 10 spin
+                if len(top_10) <= 6: # Limits top 10 colleges after 5 have been selected to limit top 10 selections being overweighted
+                    college = "Random"
+                else:
+                    college = random.choices(list(top_10.keys()), weights = list(top_10.values()), k = 1)[0] # Top 10 spin
+                    if college != "Random": # Remove a team when they are picked to limit top 10 selections being overweighted
+                        top_10["Random"] += top_10[college]
+                        del top_10[college]
             elif rnk == 'conf':
                 conf = get_division(temp_prestige)
                 if conf != conf:
@@ -169,16 +175,17 @@ def get_college(size, position, prestige):
                 else:
                     college = college_spin()
                 break
-            if college_list_total.count(college) < vars.max_pos_draft_eligable[position]:
+            if college_list_total.count(college) < vars.max_pos_draft_eligable[position]: # If under max eligible drafted, break
                 break
             elif temp_prestige <= 13:
-                if college_list_draftable.count(college) < vars.max_pos_draftable[position]:
+                if college_list_draftable.count(college) < vars.max_pos_draftable[position]: # If under max eligible total, break
                     break
         return college
 
     #! Add stuff here !#
     general = uData.load_cfg("General")
     college_data = uData.load_cfg("DraftGeneral")[str(position)]
+    top_10 = ast.literal_eval(college_data["top_10"])
     all_colleges = uData.load_cfg("CollegeByDivAndConf")
 
     all_colleges_by_div = {}

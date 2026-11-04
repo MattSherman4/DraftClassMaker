@@ -7,101 +7,101 @@ import numpy as np
 import random
 import ast
 
-#---- MAKING THE DRAFT CLASS ----#
-draft_class = pd.DataFrame()
+bama = 0
+class_num = 1
+for i in range(0, 9):
 
-#  Loading the data
-beast = uData.load_beast()
-history_draft = uData.load_draft_all()
+    #---- MAKING THE DRAFT CLASS ----#
+    draft_class = pd.DataFrame()
 
-#  Loading CFGs
-general = uData.load_cfg("General")["General"]
-draft_general = uData.load_cfg("DraftGeneral")
+    #  Loading the data
+    beast = uData.load_beast()
+    history_draft = uData.load_draft_all()
 
-#_ Collecting DATA _#
-# Get the historical draft rankings by position
-# grade_count_total = beast['Grade'].value_counts().to_dict()
-# grade_count_pos = {}
-# FA_count_pos = {}
-# RMC_count_pos = {}
-# total_count_pos = {}
-# for pos in beast['POS'].unique():
-#     temp = beast[beast['POS'] == pos].copy()
-#     grade_count_pos[pos] = temp[(temp['Grade'] != 'FA') & (temp['Grade'] != 'RMC')]['Grade'].count()
-#     FA_count_pos[pos] = temp[temp['Grade'] == 'FA']['Grade'].count()
-#     RMC_count_pos[pos] = temp[temp['Grade'] == 'RMC']['Grade'].count()
-#     total_count_pos[pos] = temp['Grade'].count()
+    #  Loading CFGs
+    general = uData.load_cfg("General")["General"]
+    draft_general = uData.load_cfg("DraftGeneral")
 
-#_ Building New Class _#
-# Get random new draft class size
-draft_class_size = {}
-for pos in ast.literal_eval(general["primary_positions"]):
-    temp = beast[beast['POS'] == pos].copy()
-    pos_size = 0
+    #_ Building New Class _#
+    # Get random new draft class size
+    draft_class_size = {}
+    for pos in ast.literal_eval(general["primary_positions"]):
+        temp = beast[beast['POS'] == pos].copy()
+        pos_size = 0
 
-    for year in ast.literal_eval(general["years_with_full_beast_data"]):
-        temp = temp[temp['Year'] == year]
-        pos_size += len(temp)
+        for year in ast.literal_eval(general["years_with_full_beast_data"]):
+            temp = temp[temp['Year'] == year]
+            pos_size += len(temp)
 
-    pos_size = pos_size / len(ast.literal_eval(general["years_with_full_beast_data"]))
-    draft_class_size[pos] = random.randint(uData.min_rand(pos_size), uData.max_rand(pos_size))
+        pos_size = pos_size / len(ast.literal_eval(general["years_with_full_beast_data"]))
+        draft_class_size[pos] = random.randint(uData.min_rand(pos_size), uData.max_rand(pos_size))
 
-# Converts the draft_class_size[pos] dictionary to a list
-pos_list = []
-for key, value in draft_class_size.items():
-    for i in range(0, value + 1):
-        pos_list.append(key)
-        
-# Add values into final draft class database 
-draft_class['POS'] = pos_list
+    # Converts the draft_class_size[pos] dictionary to a list
+    pos_list = []
+    for key, value in draft_class_size.items():
+        for i in range(0, value + 1):
+            pos_list.append(key)
+            
+    # Add values into final draft class database 
+    draft_class['POS'] = pos_list
 
-# Adding side of ball based on position mapping
-draft_class["Side"] = draft_class["POS"].map(vars.pos_abr_to_side)
+    # Adding side of ball based on position mapping
+    draft_class["Side"] = draft_class["POS"].map(vars.pos_abr_to_side)
 
-# Adding position numeric (for sorting) based on position mapping
-draft_class["POS_Numeric"] = draft_class["POS"].map(vars.pos_abr_to_num)
+    # Adding position numeric (for sorting) based on position mapping
+    draft_class["POS_Numeric"] = draft_class["POS"].map(vars.pos_abr_to_num)
 
-#_ Creating Players _#
-# Creating names
-names = uPlayerCreation.get_name(size = len(draft_class))
+    #_ Creating Players _#
+    # Creating names
+    names = uPlayerCreation.get_name(size = len(draft_class))
 
-# Add values into final draft class database 
-draft_class['Name'] = names
+    # Add values into final draft class database 
+    draft_class['Name'] = names
 
-# Grading players
-grades_total = []
-for pos in ast.literal_eval(general["primary_positions"]):
-    graded = int(draft_general[pos]['totalgraded']) / int(draft_general[pos]['total']) 
-    udfa = int(draft_general[pos]['totalfa'])  / int(draft_general[pos]['total']) 
-    pos_len = len(draft_class[draft_class['POS'] == pos])
+    # Grading players
+    grades_total = []
+    for pos in ast.literal_eval(general["primary_positions"]):
+        graded = int(draft_general[pos]['totalgraded']) / int(draft_general[pos]['total']) 
+        udfa = int(draft_general[pos]['totalfa'])  / int(draft_general[pos]['total']) 
+        pos_len = len(draft_class[draft_class['POS'] == pos])
 
-    #TODO - Wrap into UTIL function?
-    min_pos = (graded - 0.05)
-    max_pos = (graded + 0.05)
-    graded_pos = random.randrange(int(uData.min_no_neg(min_pos) * pos_len), int(uData.max_no_one(max_pos) * pos_len))
-    grades = uDraftCreation.random_grades(graded_pos, pos)
-    grades_total =  grades_total + grades
+        #TODO - Wrap into UTIL function?
+        min_pos = (graded - 0.05)
+        max_pos = (graded + 0.05)
+        graded_pos = random.randrange(int(uData.min_no_neg(min_pos) * pos_len), int(uData.max_no_one(max_pos) * pos_len))
+        grades = uDraftCreation.random_grades(graded_pos, pos)
+        grades_total =  grades_total + grades
 
-    min_pos = (udfa - 0.10)
-    max_pos = (udfa + 0.10)
-    udfa_pos = random.randrange(int(uData.min_no_neg(min_pos) * pos_len), int(uData.max_no_one(max_pos) * pos_len))
-    grades_total =  grades_total + ['FA'] * udfa_pos
-    grades_total =  grades_total + ['RMC'] * (pos_len - (graded_pos + udfa_pos))
+        min_pos = (udfa - 0.10)
+        max_pos = (udfa + 0.10)
+        udfa_pos = random.randrange(int(uData.min_no_neg(min_pos) * pos_len), int(uData.max_no_one(max_pos) * pos_len))
+        grades_total =  grades_total + ['FA'] * udfa_pos
+        grades_total =  grades_total + ['RMC'] * (pos_len - (graded_pos + udfa_pos))
 
-# Add values into final draft class database 
-draft_class['Grade'] = grades_total
-draft_class['Grades_Numeric'] = draft_class['Grade'].map(vars.draft_grades_to_numeric)
-draft_class['Prestige'] = uData.get_prestige(draft_class)
+    # Add values into final draft class database 
+    draft_class['Grade'] = grades_total
+    draft_class['Grades_Numeric'] = draft_class['Grade'].map(vars.draft_grades_to_numeric)
+    draft_class['Prestige'] = uData.get_prestige(draft_class)
 
-# Adding colleges
-draft_class = draft_class.assign(College = np.nan)
-for pos in ast.literal_eval(general["primary_positions"]):
-    temp_class = draft_class[draft_class['POS'] == pos].copy()
-    college_list = uPlayerCreation.get_college(size = len(temp_class),  position = pos, prestige = list(draft_class['Prestige']))
-    college_list = [l[0] for l in sorted(college_list, key = lambda x: x[1])]
-    temp_class = temp_class.sort_values(['Grades_Numeric'])
-    temp_class['College'] = college_list
-    draft_class = uData.merge_and_remove_x_y_cols(draft_class.join(temp_class, on = list(temp_class.columns).remove('College'), how = 'left', lsuffix = "_x", rsuffix = "_y"))
+    # Adding colleges
+    draft_class = draft_class.assign(College = np.nan)
+    for pos in ast.literal_eval(general["primary_positions"]):
+        temp_class = draft_class[draft_class['POS'] == pos].copy()
+        college_list = uPlayerCreation.get_college(size = len(temp_class),  position = pos, prestige = list(draft_class['Prestige']))
+        college_list = [l[0] for l in sorted(college_list, key = lambda x: x[1])]
+        temp_class = temp_class.sort_values(['Grades_Numeric'])
+        temp_class['College'] = college_list
+        draft_class = uData.merge_and_remove_x_y_cols(draft_class.join(temp_class, on = list(temp_class.columns).remove('College'), how = 'left', lsuffix = "_x", rsuffix = "_y"))
 
-print(draft_class.sort_values(['Grades_Numeric', 'POS_Numeric']).reset_index(drop = True).head(32)[['POS', 'Name', 'Grade', 'College']])
-draft_class.sort_values(['Grades_Numeric', 'POS_Numeric']).reset_index(drop = True)[['POS', 'Name', 'Grade', 'College']].to_csv('output.csv')
+    print(f"Class {class_num}: {(draft_class['College'] == 'Maryland').sum()} Maryland players")
+    class_num += 1
+    bama += (draft_class['College'] == 'Maryland').sum()
+    print(f" -- Total: {bama} Maryland players")
+
+
+print(f"Average number of Maryland players: {bama / 10}")
+    # draft_class = draft_class.groupby('Grades_Numeric', group_keys = False).apply(lambda x: x.sample(frac = 1)).reset_index(drop = True)
+
+    # print(draft_class.head(32)[['POS', 'Name', 'Grade', 'College']])
+    # print(draft_class[draft_class['POS'] == 'QB'].head(20))
+    # draft_class[['POS', 'Name', 'Grade', 'College']].to_csv('output.csv')

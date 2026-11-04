@@ -35,14 +35,14 @@ pos_abr_to_side = {'QB' : 'OFF', 'HB' : 'OFF',
 # Maximum players in a draft with a draftable grade (prestige <= 13)
 max_pos_draftable = {'QB' : 1, 'HB' : 2, 'WR' : 3, 'TE' : 2,
                 'OT' : 2, 'OG' : 2, 'C' : 2, 'EDGE' : 3,
-                'DT' : 2, 'MLB' : 3, 'CB' : 3, 'S' : 3,
+                'DT' : 2, 'MLB' : 2, 'CB' : 3, 'S' : 3,
                 'K' : 1, 'P' : 1, 'LS' : 1}
 
 # Maximum players in a draft with a draft eligable grade (prestige > 13)
-max_pos_draft_eligable = {'QB' : 4, 'HB' : 5, 'WR' : 10, 'TE' : 5,
-                'OT' : 6, 'OG' : 6, 'C' : 4, 'EDGE' : 8,
-                'DT' : 8, 'MLB' : 6, 'CB' : 10, 'S' : 7,
-                'K' : 2, 'P' : 2, 'LS' : 2}
+max_pos_draft_eligable = {'QB' : 2, 'HB' : 3, 'WR' : 5, 'TE' : 3, # 13
+                'OT' : 3, 'OG' : 3, 'C' : 2, 'EDGE' : 5, # 13
+                'DT' : 5, 'MLB' : 3, 'CB' : 5, 'S' : 4, # 17
+                'K' : 2, 'P' : 2, 'LS' : 2} # 6
 
 # Converts side of ball abbreviation to full
 pos_side_to_full = {'OFF' : 'Offense', 'DEF' : 'Defense',
